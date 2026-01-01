@@ -37,18 +37,36 @@ Kafka UI가 정상적으로 실행 중이며 클러스터에 연결되었습니�
 상태: 온라인 (local-cluster 모니터링 중)
 ```
 
-## 실행 방법
-1. 클러스터 시작
-```
-docker-compose up -d
-```
+## 3. 실행 방법 (Kafka Connect 포함)
 
-2. 로그 확인
-```
-docker-compose logs -f
-```
+기존 `docker-compose.yml`에 Kafka Connect 서비스가 추가되었습니다.
 
-3. 클러스터 중지 및 데이터 삭제
+1. **Docker Compose 실행**
+   ```bash
+   docker-compose up -d --build
+   ```
+   * `--build` 옵션을 추가하여 `connect/Dockerfile`을 빌드해야 합니다.
+
+2. **상태 확인**
+   ```bash
+   docker-compose ps
+   ```
+   * `kafka-1`, `kafka-2`, `kafka-3` (Brokers)
+   * `kafka-ui` (Management UI)
+   * `kafka-connect` (Connect Service)
+
+## 4. Web UI 접속
+
+* **Kafka UI**: [http://localhost:8080](http://localhost:8080)
+    * Kafka Cluster 정보 확인 (Brokers, Topics, Consumers)
+    * **Kafka Connect** 메뉴에서 `kafka-connect` 클러스터가 연결된 것을 확인할 수 있습니다.
+    * `Create Connector` 버튼을 눌러 Debezium 플러그인 (MySQL, Postgres)이 설치되어 있는지 확인하세요.
+
+## 5. Kafka Connect 플러그인 확인
+
+Kafka Connect 컨테이너 로그를 통해 플러그인이 정상적으로 로드되었는지 확인할 수 있습니다.
+
+```bash
+docker logs kafka-connect | grep "Added plugin"
 ```
-docker-compose down -v
-```
+또는 Kafka UI의 Kafka Connect 메뉴에서 확인할 수 있습니다.
